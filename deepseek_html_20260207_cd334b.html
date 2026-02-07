@@ -1,0 +1,2296 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Դպրոցական Ինտելեկտուալ Հարթակ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3a0ca3;
+            --accent-color: #7209b7;
+            --success-color: #4cc9f0;
+            --warning-color: #f8961e;
+            --danger-color: #f72585;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --teacher-color: #06d6a0;
+            --student-color: #118ab2;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c2461, #1e3799);
+            color: var(--dark-color);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.98);
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            padding: 40px;
+            min-height: 90vh;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid rgba(67, 97, 238, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .logo-icon i {
+            font-size: 32px;
+            color: white;
+        }
+
+        h1 {
+            color: var(--secondary-color);
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: var(--accent-color);
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--card-shadow);
+        }
+
+        .close-modal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .auth-container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+            border-bottom: 3px solid transparent;
+        }
+
+        .auth-tab.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+            outline: none;
+        }
+
+        .grades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .grade-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 25px 15px;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+        }
+
+        .grade-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .grade-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .webcam-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+            border: 2px dashed #ddd;
+        }
+
+        #camera {
+            width: 100%;
+            max-width: 640px;
+            background: #000;
+            border-radius: 10px;
+            margin: 0 auto 20px;
+        }
+
+        .webcam-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .student-profile {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .student-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 25px;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .student-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .subject-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+            border-left: 8px solid;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .subject-icon {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .subject-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+
+        .subject-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .question-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            box-shadow: var(--card-shadow);
+            border-left: 8px solid var(--primary-color);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .question-subject {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .question-counter {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.6em;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .option.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .option.correct {
+            background: #4cc9f0;
+            color: white;
+            border-color: #4cc9f0;
+        }
+
+        .option.incorrect {
+            background: #f72585;
+            color: white;
+            border-color: #f72585;
+        }
+
+        .option-number {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .ai-assistant {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            box-shadow: var(--card-shadow);
+        }
+
+        .ai-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .ai-icon {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 24px;
+            color: #764ba2;
+        }
+
+        .ai-message {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .ai-suggestions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ai-suggestion {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .teacher-dashboard {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: var(--card-shadow);
+        }
+
+        .class-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            border-left: 5px solid var(--teacher-color);
+        }
+
+        .stat-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--teacher-color);
+            margin-bottom: 10px;
+        }
+
+        .students-list {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .student-row {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            transition: var(--transition);
+        }
+
+        .student-row:hover {
+            background: white;
+        }
+
+        .student-avatar-small {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-teacher {
+            background: var(--teacher-color);
+            color: white;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quick-login-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .quick-login-btn {
+            padding: 12px;
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            background: white;
+            color: var(--primary-color);
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .quick-login-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .search-container {
+            margin: 20px auto;
+            max-width: 600px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .question-image {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .question-image img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--card-shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @media (max-width: 992px) {
+            .container { padding: 20px; }
+            .subjects-grid { grid-template-columns: repeat(2, 1fr); }
+            .options-grid { grid-template-columns: 1fr; }
+            h1 { font-size: 2.2em; }
+        }
+
+        @media (max-width: 768px) {
+            .subjects-grid { grid-template-columns: 1fr; }
+            .student-profile { flex-direction: column; text-align: center; }
+            .student-avatar { margin-right: 0; margin-bottom: 20px; }
+            .auth-container { padding: 20px; }
+            h1 { font-size: 1.8em; }
+            .buttons-container { flex-direction: column; }
+            .btn { width: 100%; }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="authScreen">
+            <header>
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div>
+                        <h1>Դպրոցական Ինտելեկտուալ Հարթակ</h1>
+                        <div class="subtitle">AI-աջակցությամբ ուսումնական հարթակ 1-9-րդ դասարանների համար</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <div class="auth-tab active" onclick="switchAuthTab('student')">
+                        <i class="fas fa-user-graduate"></i> Աշակերտ
+                    </div>
+                    <div class="auth-tab" onclick="switchAuthTab('teacher')">
+                        <i class="fas fa-chalkboard-teacher"></i> Ուսուցիչ
+                    </div>
+                </div>
+
+                <div id="studentAuth">
+                    <div class="form-group">
+                        <label for="studentGrade"><i class="fas fa-graduation-cap"></i> Դասարան</label>
+                        <select id="studentGrade">
+                            <option value="">Ընտրեք դասարանը</option>
+                            <option value="1">1-ին դասարան</option>
+                            <option value="2">2-րդ դասարան</option>
+                            <option value="3">3-րդ դասարան</option>
+                            <option value="4">4-րդ դասարան</option>
+                            <option value="5">5-րդ դասարան</option>
+                            <option value="6">6-րդ դասարան</option>
+                            <option value="7">7-րդ դասարան</option>
+                            <option value="8">8-րդ դասարան</option>
+                            <option value="9">9-րդ դասարան</option>
+                        </select>
+                    </div>
+
+                    <div class="buttons-container">
+                        <button class="btn btn-primary" onclick="proceedToCamera()">
+                            <i class="fas fa-camera"></i> Շարունակել
+                        </button>
+                    </div>
+                </div>
+
+                <div id="teacherAuth" class="hidden">
+                    <div class="form-group">
+                        <label for="teacherEmail"><i class="fas fa-envelope"></i> Էլեկտրոնային հասցե</label>
+                        <input type="email" id="teacherEmail" placeholder="ուսուցիչ@դպրոց.am">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="teacherPassword"><i class="fas fa-lock"></i> Գաղտնաբառ</label>
+                        <input type="password" id="teacherPassword" placeholder="գաղտնաբառ">
+                    </div>
+
+                    <div class="buttons-container">
+                        <button class="btn btn-teacher" onclick="teacherLogin()">
+                            <i class="fas fa-sign-in-alt"></i> Մուտք գործել
+                        </button>
+                    </div>
+
+                    <div class="quick-login-buttons">
+                        <div class="subtitle" style="text-align: center; margin: 15px 0 10px 0; color: var(--accent-color);">
+                            Արագ մուտք ուսուցիչների համար
+                        </div>
+                        
+                        <button class="quick-login-btn" onclick="quickLogin('aren.gasparyan4@tumo.org', 'Aren2012.')">
+                            <i class="fas fa-user-tie"></i> Արեն Գասպարյան (բոլոր դասարաններ)
+                        </button>
+                        
+                        <button class="quick-login-btn" onclick="quickLogin('teacher1@school.am', 'teacher123')">
+                            <i class="fas fa-chalkboard-teacher"></i> Ուսուցիչ 1 (5-9 դասարաններ)
+                        </button>
+                        
+                        <button class="quick-login-btn" onclick="quickLogin('teacher2@school.am', 'teacher456')">
+                            <i class="fas fa-chalkboard-teacher"></i> Ուսուցիչ 2 (1-4 դասարաններ)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="cameraScreen" class="hidden">
+            <header>
+                <h2><i class="fas fa-camera"></i> Լուսանկարում</h2>
+                <div class="subtitle">Լուսանկարվեք պրոֆիլի համար</div>
+            </header>
+
+            <div class="webcam-container">
+                <div id="camera"></div>
+                <div class="webcam-buttons">
+                    <button class="btn btn-primary" onclick="capturePhoto()">
+                        <i class="fas fa-camera"></i> Լուսանկարել
+                    </button>
+                    <button class="btn btn-secondary" onclick="retakePhoto()">
+                        <i class="fas fa-redo"></i> Վերալուսանկարել
+                    </button>
+                </div>
+            </div>
+
+            <div id="photoPreview" class="hidden">
+                <div class="question-image">
+                    <img id="capturedPhoto" src="" alt="Captured Photo">
+                </div>
+                
+                <div class="form-group">
+                    <label for="studentFirstName"><i class="fas fa-user"></i> Անուն</label>
+                    <input type="text" id="studentFirstName" placeholder="Անուն">
+                </div>
+                
+                <div class="form-group">
+                    <label for="studentLastName"><i class="fas fa-user"></i> Ազգանուն</label>
+                    <input type="text" id="studentLastName" placeholder="Ազգանուն">
+                </div>
+                
+                <div class="form-group">
+                    <label for="studentPatronymic"><i class="fas fa-user"></i> Հայրանուն</label>
+                    <input type="text" id="studentPatronymic" placeholder="Հայրանուն">
+                </div>
+
+                <div class="buttons-container">
+                    <button class="btn btn-primary" onclick="saveStudentProfile()">
+                        <i class="fas fa-save"></i> Պահպանել պրոֆիլը
+                    </button>
+                    <button class="btn btn-secondary" onclick="showAuthScreen()">
+                        <i class="fas fa-arrow-left"></i> Վերադառնալ
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="studentDashboard" class="hidden">
+            <header>
+                <div class="student-profile">
+                    <div class="student-avatar">
+                        <img id="profilePhoto" src="" alt="Student Photo">
+                    </div>
+                    <div class="student-info">
+                        <h3 id="studentFullName"></h3>
+                        <p id="studentGradeText"></p>
+                        <p id="studentId"></p>
+                        <p><i class="fas fa-calendar"></i> Գրանցման ամսաթիվ: <span id="registrationDate"></span></p>
+                    </div>
+                </div>
+
+                <div class="ai-assistant">
+                    <div class="ai-header">
+                        <div class="ai-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div>
+                            <h3 style="color: white; margin: 0;">AI Օգնական</h3>
+                            <p style="opacity: 0.9; margin: 5px 0 0 0;">Ես կօգնեմ ձեզ սովորել</p>
+                        </div>
+                    </div>
+                    <div class="ai-message" id="aiMessage">
+                        Բարև <span id="aiStudentName"></span>! Ես ձեր AI օգնականն եմ։ Կարող եք ինձ հարցեր տալ կամ օգնություն խնդրել ցանկացած առարկայից։
+                    </div>
+                    <div class="ai-suggestions">
+                        <div class="ai-suggestion" onclick="askAI('Ինչպե՞ս լուծել մաթեմատիկական խնդիրը')">Ինչպե՞ս լուծել մաթեմատիկական խնդիրը</div>
+                        <div class="ai-suggestion" onclick="askAI('Բացատրիր ֆիզիկայի այս հասկացությունը')">Բացատրիր ֆիզիկայի այս հասկացությունը</div>
+                        <div class="ai-suggestion" onclick="askAI('Ինչպե՞ս բարելավել իմ արդյունքները')">Ինչպե՞ս բարելավել իմ արդյունքները</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Որոնել հարցեր...">
+                    <button class="btn btn-primary" onclick="performSearch()">
+                        <i class="fas fa-search"></i> Որոնել
+                    </button>
+                </div>
+            </div>
+
+            <h2 style="color: var(--primary-color); margin: 40px 0 20px 0; text-align: center;">
+                <i class="fas fa-book-open"></i> Առարկաներ
+            </h2>
+
+            <div class="subjects-grid" id="subjectsGrid"></div>
+
+            <div class="buttons-container" style="margin-top: 50px;">
+                <button class="btn btn-success" onclick="openAIChat()">
+                    <i class="fas fa-robot"></i> Բացել AI Օգնական
+                </button>
+                <button class="btn btn-secondary" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Դուրս գալ
+                </button>
+            </div>
+        </div>
+
+        <div id="questionScreen" class="hidden">
+            <div class="question-container">
+                <div class="question-header">
+                    <div class="question-subject" id="questionSubject"></div>
+                    <div class="question-counter" id="questionCounter"></div>
+                </div>
+
+                <div id="questionContainer"></div>
+
+                <div class="options-grid" id="optionsGrid"></div>
+
+                <div class="buttons-container">
+                    <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()" disabled>
+                        <i class="fas fa-check-circle"></i> Հաստատել պատասխանը
+                    </button>
+                    <button class="btn btn-success" onclick="openAIChat()">
+                        <i class="fas fa-robot"></i> AI Օգնական
+                    </button>
+                    <button class="btn btn-secondary" onclick="backToSubjects()">
+                        <i class="fas fa-arrow-left"></i> Վերադառնալ առարկաներին
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="teacherDashboard" class="hidden">
+            <header>
+                <div class="logo">
+                    <div class="logo-icon" style="background: var(--teacher-color);">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div>
+                        <h1>Ուսուցչի Վահանակ</h1>
+                        <div class="subtitle" id="teacherWelcome">Բարի գալուստ</div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="teacher-dashboard">
+                <div class="form-group">
+                    <label for="teacherClassSelect"><i class="fas fa-graduation-cap"></i> Ընտրեք դասարանը</label>
+                    <select id="teacherClassSelect" onchange="loadClassData()">
+                        <option value="">Ընտրեք դասարանը</option>
+                        <option value="1">1-ին դասարան</option>
+                        <option value="2">2-րդ դասարան</option>
+                        <option value="3">3-րդ դասարան</option>
+                        <option value="4">4-րդ դասարան</option>
+                        <option value="5">5-րդ դասարան</option>
+                        <option value="6">6-րդ դասարան</option>
+                        <option value="7">7-րդ դասարան</option>
+                        <option value="8">8-րդ դասարան</option>
+                        <option value="9">9-րդ դասարան</option>
+                    </select>
+                </div>
+
+                <div id="classStatistics" class="hidden">
+                    <h3 style="color: var(--teacher-color); margin: 30px 0 20px 0;">
+                        <i class="fas fa-chart-bar"></i> Դասարանի Վիճակագրություն
+                    </h3>
+
+                    <div class="class-stats">
+                        <div class="stat-card">
+                            <div class="value" id="totalStudents">0</div>
+                            <div class="stat-label">Ընդհանուր աշակերտներ</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="averageScore">0%</div>
+                            <div class="stat-label">Միջին տոկոս</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="completedTests">0</div>
+                            <div class="stat-label">Ավարտված թեստեր</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="value" id="topStudent">-</div>
+                            <div class="stat-label">Լավագույն աշակերտ</div>
+                        </div>
+                    </div>
+
+                    <div id="subjectStats"></div>
+
+                    <div class="students-list">
+                        <h4 style="color: var(--dark-color); margin-bottom: 20px;">
+                            <i class="fas fa-users"></i> Աշակերտների ցուցակ
+                        </h4>
+                        <div id="studentsList"></div>
+                    </div>
+
+                    <div class="buttons-container" style="margin-top: 30px;">
+                        <button class="btn btn-teacher" onclick="sendReportsToEmail()">
+                            <i class="fas fa-envelope"></i> Ուղարկել հաշվետվություններ էլ. փոստով
+                        </button>
+                        <button class="btn btn-secondary" onclick="teacherLogout()">
+                            <i class="fas fa-sign-out-alt"></i> Դուրս գալ
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeSearchModal()">&times;</span>
+            <h3 style="color: var(--primary-color); margin-bottom: 20px;">
+                <i class="fas fa-search"></i> Որոնման Արդյունքներ
+            </h3>
+            <div id="searchResultsContent"></div>
+        </div>
+    </div>
+
+    <div id="aiChatModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAIChatModal()">&times;</span>
+            <div class="ai-header" style="margin-bottom: 20px;">
+                <div class="ai-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div>
+                    <h3 style="color: var(--primary-color); margin: 0;">AI Օգնական - Զրուցասենյակ</h3>
+                    <p style="color: #666; margin: 5px 0 0 0;">Հարցրեք ինչ որ ուզում եք</p>
+                </div>
+            </div>
+            
+            <div id="aiChatMessages" style="min-height: 300px; max-height: 400px; overflow-y: auto; margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 10px;">
+                <div class="ai-message" style="padding: 10px; margin: 10px 0; background: white; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                    <strong>AI Օգնական:</strong> Բարև! Ինչպե՞ս կարող եմ օգնել ձեզ այսօր:
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <input type="text" id="aiChatInput" placeholder="Տվեք ձեր հարցը..." 
+                       style="flex: 1; padding: 12px; border: 2px solid #ddd; border-radius: 8px;">
+                <button class="btn btn-primary" onclick="sendAIMessage()">
+                    <i class="fas fa-paper-plane"></i> Ուղարկել
+                </button>
+            </div>
+            
+            <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <div class="ai-suggestion" onclick="quickAIMessage('Ինչպե՞ս լուծել մաթեմատիկական խնդիրը')">
+                    Մաթեմատիկական խնդիր
+                </div>
+                <div class="ai-suggestion" onclick="quickAIMessage('Բացատրիր ֆիզիկայի օրենքը')">
+                    Ֆիզիկայի օրենք
+                </div>
+                <div class="ai-suggestion" onclick="quickAIMessage('Ինչպե՞ս սովորել ավելի արդյունավետ')">
+                    Ուսուցման մեթոդներ
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notificationContainer"></div>
+
+    <script>
+        const gameData = {
+            teachers: {
+                'teacher1@school.am': {
+                    password: 'teacher123',
+                    name: 'Անահիտ Պետրոսյան',
+                    classes: ['5', '6', '7', '8', '9'],
+                    email: 'teacher1@school.am',
+                    role: 'teacher'
+                },
+                'teacher2@school.am': {
+                    password: 'teacher456',
+                    name: 'Գևորգ Մարտիրոսյան',
+                    classes: ['1', '2', '3', '4'],
+                    email: 'teacher2@school.am',
+                    role: 'teacher'
+                },
+                'admin@school.am': {
+                    password: 'admin2024',
+                    name: 'Գլխավոր Ադմինիստրատոր',
+                    classes: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+                    email: 'admin@school.am',
+                    role: 'admin'
+                },
+                'davit@school.am': {
+                    password: '',
+                    name: 'Դավիթ Ուսուցիչ',
+                    classes: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+                    email: 'davit@school.am',
+                    role: 'teacher'
+                },
+                'aren.gasparyan4@tumo.org': {
+                    password: 'Aren2012.',
+                    name: 'Արեն Գասպարյան',
+                    classes: ['1', '2', '3', '4', '5', '6', '7', '8', '9'],
+                    email: 'aren.gasparyan4@tumo.org',
+                    role: 'director'
+                }
+            },
+            
+            subjectsByGrade: {
+                '1': [
+                    {name: 'Մայրենի լեզու', category: 'լեզու'},
+                    {name: 'Մաթեմատիկա', category: 'մաթեմատիկա'},
+                    {name: 'Բնագիտություն', category: 'բնագիտություն'},
+                    {name: 'Նկարչություն', category: 'արվեստ'}
+                ],
+                '2': [
+                    {name: 'Մայրենի լեզու', category: 'լեզու'},
+                    {name: 'Մաթեմատիկա', category: 'մաթեմատիկա'},
+                    {name: 'Բնագիտություն', category: 'բնագիտություն'},
+                    {name: 'Անգլերեն', category: 'լեզու'},
+                    {name: 'Նկարչություն', category: 'արվեստ'}
+                ],
+                '3': [
+                    {name: 'Մայրենի լեզու', category: 'լեզու'},
+                    {name: 'Մաթեմատիկա', category: 'մաթեմատիկա'},
+                    {name: 'Բնագիտություն', category: 'բնագիտություն'},
+                    {name: 'Անգլերեն', category: 'լեզու'},
+                    {name: 'Ռուսերեն', category: 'լեզու'},
+                    {name: 'Նկարչություն', category: 'արվեստ'}
+                ],
+                '4': [
+                    {name: 'Մայրենի լեզու', category: 'լեզու'},
+                    {name: 'Մաթեմատիկա', category: 'մաթեմատիկա'},
+                    {name: 'Բնագիտություն', category: 'բնագիտություն'},
+                    {name: 'Անգլերեն', category: 'լեզու'},
+                    {name: 'Ռուսերեն', category: 'լեզու'},
+                    {name: 'Պատմություն', category: 'հասարակագիտություն'},
+                    {name: 'Նկարչություն', category: 'արվեստ'}
+                ],
+                '5': [
+                    {name: 'Մայրենի լեզու', category: 'լեզու'},
+                    {name: 'Մաթեմատիկա', category: 'մաթեմատիկա'},
+                    {name: 'Բնագիտություն', category: 'բնագիտություն'},
+                    {name: 'Անգլերեն', category: 'լեզու'},
+                    {name: 'Ռուսերեն', category: 'լեզու'},
+                    {name: 'Պատմություն', category: 'հասարակագիտություն'},
+                    {name: 'Աշխարհագրություն', category: 'հասարակագիտություն'},
+                    {name: 'Երաժշտություն', category: 'արվեստ'}
+                ],
+                '6': [
+                    {name: 'Մայրենի լեզու', category: 'լեզու'},
+                    {name: 'Մաթեմատիկա', category: 'մաթեմատիկա'},
+                    {name: 'Բնագիտություն', category: 'բնագիտություն'},
+                    {name: 'Անգլերեն', category: 'լեզու'},
+                    {name: 'Ռուսերեն', category: 'լեզու'},
+                    {name: 'Պատմություն', category: 'հասարակագիտություն'},
+                    {name: 'Աշխարհագրություն', category: 'հասարակագիտություն'},
+                    {name: 'Երաժշտություն', category: 'արվեստ'},
+                    {name: 'Ֆիզիկական դաստիարակություն', category: 'սպորտ'}
+                ],
+                '7': [
+                    {name: 'Մայրենի լեզու', category: 'լեզու'},
+                    {name: 'Մաթեմատիկա', category: 'մաթեմատիկա'},
+                    {name: 'Ֆիզիկա', category: 'գիտություն'},
+                    {name: 'Քիմիա', category: 'գիտություն'},
+                    {name: 'Կենսաբանություն', category: 'գիտություն'},
+                    {name: 'Անգլերեն', category: 'լեզու'},
+                    {name: 'Ռուսերեն', category: 'լեզու'},
+                    {name: 'Պատմություն', category: 'հասարակագիտություն'},
+                    {name: 'Աշխարհագրություն', category: 'հասարակագիտություն'},
+                    {name: 'Ինֆորմատիկա', category: 'տեխնոլոգիա'}
+                ],
+                '8': [
+                    {name: 'Մայրենի լեզու', category: 'լեզու'},
+                    {name: 'Մաթեմատիկա', category: 'մաթեմատիկա'},
+                    {name: 'Ֆիզիկա', category: 'գիտություն'},
+                    {name: 'Քիմիա', category: 'գիտություն'},
+                    {name: 'Կենսաբանություն', category: 'գիտություն'},
+                    {name: 'Անգլերեն', category: 'լեզու'},
+                    {name: 'Ռուսերեն', category: 'լեզու'},
+                    {name: 'Պատմություն', category: 'հասարակագիտություն'},
+                    {name: 'Աշխարհագրություն', category: 'հասարակագիտություն'},
+                    {name: 'Ինֆորմատիկա', category: 'տեխնոլոգիա'},
+                    {name: 'Հայոց լեզու և գրականություն', category: 'լեզու'}
+                ],
+                '9': [
+                    {name: 'Մայրենի լեզու', category: 'լեզու'},
+                    {name: 'Մաթեմատիկա', category: 'մաթեմատիկա'},
+                    {name: 'Ֆիզիկա', category: 'գիտություն'},
+                    {name: 'Քիմիա', category: 'գիտություն'},
+                    {name: 'Կենսաբանություն', category: 'գիտություն'},
+                    {name: 'Անգլերեն', category: 'լեզու'},
+                    {name: 'Ռուսերեն', category: 'լեզու'},
+                    {name: 'Պատմություն', category: 'հասարակագիտություն'},
+                    {name: 'Աշխարհագրություն', category: 'հասարակագիտություն'},
+                    {name: 'Ինֆորմատիկա', category: 'տեխնոլոգիա'},
+                    {name: 'Արտասահմանյան լեզու', category: 'լեզու'},
+                    {name: 'Հայոց պատմություն', category: 'հասարակագիտություն'}
+                ]
+            },
+            
+            subjectStyles: {
+                'Մայրենի լեզու': { color: '#EF476F', icon: '📚', emoji: '🇦🇲' },
+                'Հայոց լեզու և գրականություն': { color: '#EF476F', icon: '📖', emoji: '✍️' },
+                'Մաթեմատիկա': { color: '#118AB2', icon: '📐', emoji: '🧮' },
+                'Բնագիտություն': { color: '#06D6A0', icon: '🌿', emoji: '🔬' },
+                'Անգլերեն': { color: '#FFD166', icon: '🇺🇸', emoji: '🇬🇧' },
+                'Ռուսերեն': { color: '#073B4C', icon: '🇷🇺', emoji: '🇷🇺' },
+                'Պատմություն': { color: '#7209B7', icon: '🏛️', emoji: '📜' },
+                'Հայոց պատմություն': { color: '#7209B7', icon: '🏺', emoji: '🕌' },
+                'Աշխարհագրություն': { color: '#3A86FF', icon: '🌍', emoji: '🗺️' },
+                'Ֆիզիկա': { color: '#FB5607', icon: '⚛️', emoji: '⚡' },
+                'Քիմիա': { color: '#8338EC', icon: '🧪', emoji: '⚗️' },
+                'Կենսաբանություն': { color: '#3A86FF', icon: '🧬', emoji: '🦠' },
+                'Ինֆորմատիկա': { color: '#FF006E', icon: '💻', emoji: '💾' },
+                'Նկարչություն': { color: '#FFBE0B', icon: '🎨', emoji: '🖼️' },
+                'Երաժշտություն': { color: '#FB5607', icon: '🎵', emoji: '🎼' },
+                'Ֆիզիկական դաստիարակություն': { color: '#4CC9F0', icon: '⚽', emoji: '🏃' },
+                'Արտասահմանյան լեզու': { color: '#9B5DE5', icon: '🗣️', emoji: '🗺️' }
+            },
+            
+            questionsDatabase: {
+                '1': {
+                    'Մայրենի լեզու': [
+                        {
+                            id: '1-hy-1',
+                            question: 'Ո՞ր տառն է բացակայում այբբենական շարքում: Ա, Բ, Գ, Դ, Ե, Զ, Է, Ը, Թ, Ժ, Ի, Լ, Խ, Ծ, Կ, Հ, Ձ, Ղ, Ճ, Մ, Յ, Ն, Շ, Ո, Չ, Պ, Ջ, Ռ, Ս, Վ, Տ, Ր, Ց, Ւ, Փ, Ք',
+                            image: 'https://images.unsplash.com/photo-1589256469067-ea99122bbdc4?w=400&h=200&fit=crop&crop=center',
+                            options: ['Բ', 'Կ', 'Ը', 'Օ'],
+                            correct: 2,
+                            explanation: 'Պատասխանը "Ը" է, քանի որ այբբենական շարքում այն գալիս է "Է" տառից հետո։',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        },
+                        {
+                            id: '1-hy-2',
+                            question: 'Ընտրիր ճիշտ տառը բառը լրացնելու համար: դպր_ց',
+                            image: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=400&h=200&fit=crop&crop=center',
+                            options: ['ո', 'ու', 'ա', 'ը'],
+                            correct: 0,
+                            explanation: 'Ճիշտ տառը "ո" է, բառը "դպրոց" է։',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        }
+                    ],
+                    'Մաթեմատիկա': [
+                        {
+                            id: '1-math-1',
+                            question: 'Գումարիր՝ 5 + 3 = ?',
+                            image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=200&fit=crop&crop=center',
+                            options: ['6', '7', '8', '9'],
+                            correct: 2,
+                            explanation: '5 + 3 = 8',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        },
+                        {
+                            id: '1-math-2',
+                            question: 'Քանի՞ խնձոր կա նկարում?',
+                            image: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?w=400&h=200&fit=crop&crop=center',
+                            options: ['3', '4', '5', '6'],
+                            correct: 2,
+                            explanation: 'Ընդհանուր կա 5 խնձոր։',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        }
+                    ]
+                },
+                '2': {
+                    'Մայրենի լեզու': [
+                        {
+                            id: '2-hy-1',
+                            question: 'Ընտրիր ճիշտ պատասխանը. Ես ... աշակերտ եմ:',
+                            image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=200&fit=crop&crop=center',
+                            options: ['եմ', 'ես', 'են'],
+                            correct: 1,
+                            explanation: 'Ճիշտ պատասխանը "ես" է:',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        }
+                    ],
+                    'Մաթեմատիկա': [
+                        {
+                            id: '2-math-1',
+                            question: 'Գրիր թվերը բառերով. 5 →',
+                            image: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=400&h=200&fit=crop&crop=center',
+                            options: ['երեք', 'չորս', 'հինգ', 'վեց'],
+                            correct: 2,
+                            explanation: '5 → հինգ',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        },
+                        {
+                            id: '2-math-2',
+                            question: 'Ի՞նչ գույն ունի երկինքը:',
+                            image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop&crop=center',
+                            options: ['Կապույտ', 'Կարմիր', 'Դեղին'],
+                            correct: 0,
+                            explanation: 'Երկինքը կապույտ է:',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        }
+                    ]
+                },
+                '3': {
+                    'Մայրենի լեզու': [
+                        {
+                            id: '3-hy-1',
+                            question: 'Ընտրիր ճիշտ ձևը. Ես ... մեծ ընտանիք ունեմ:',
+                            image: 'https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=400&h=200&fit=crop&crop=center',
+                            options: ['ունեմ', 'ունես', 'ունի'],
+                            correct: 0,
+                            explanation: 'Ճիշտ պատասխանը "ունեմ" է:',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        }
+                    ],
+                    'Անգլերեն': [
+                        {
+                            id: '3-eng-1',
+                            question: 'Write in plural: cat →',
+                            image: 'https://images.unsplash.com/photo-1513360371669-4adf3dd7dff8?w=400&h=200&fit=crop&crop=center',
+                            options: ['cats', 'cates', 'caties', 'cat'],
+                            correct: 0,
+                            explanation: 'cat → cats',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        },
+                        {
+                            id: '3-eng-2',
+                            question: 'The book is ... the table.',
+                            image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=200&fit=crop&crop=center',
+                            options: ['in', 'on', 'under', 'over'],
+                            correct: 1,
+                            explanation: 'The book is ON the table.',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        }
+                    ]
+                },
+                '4': {
+                    'Անգլերեն': [
+                        {
+                            id: '4-eng-1',
+                            question: 'Complete: You ... play football after classes.',
+                            image: 'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=400&h=200&fit=crop&crop=center',
+                            options: ['can', 'may', 'must', 'should'],
+                            correct: 0,
+                            explanation: 'You CAN play football after classes.',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        },
+                        {
+                            id: '4-eng-2',
+                            question: 'Fill in: I bought ... newspapers yesterday.',
+                            image: 'https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?w=400&h=200&fit=crop&crop=center',
+                            options: ['some', 'any', 'no', 'many'],
+                            correct: 0,
+                            explanation: 'I bought SOME newspapers yesterday.',
+                            difficulty: 1,
+                            type: 'multiple_choice'
+                        }
+                    ],
+                    'Մաթեմատիկա': [
+                        {
+                            id: '4-math-1',
+                            question: 'Հաշվիր՝ 25 + 17 = ?',
+                            image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=200&fit=crop&crop=center',
+                            options: ['32', '42', '52', '62'],
+                            correct: 1,
+                            explanation: '25 + 17 = 42',
+                            difficulty: 2,
+                            type: 'multiple_choice'
+                        }
+                    ]
+                },
+                '5': {
+                    'Անգլերեն': [
+                        {
+                            id: '5-eng-1',
+                            question: 'Fill in: The children ... outside now.',
+                            image: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=400&h=200&fit=crop&crop=center',
+                            options: ['play', 'plays', 'are playing', 'played'],
+                            correct: 2,
+                            explanation: 'The children ARE PLAYING outside now.',
+                            difficulty: 2,
+                            type: 'multiple_choice'
+                        },
+                        {
+                            id: '5-eng-2',
+                            question: 'Fill in: I\'m here today but I ... here yesterday.',
+                            image: 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=400&h=200&fit=crop&crop=center',
+                            options: ['am not', 'was not', 'were not', 'is not'],
+                            correct: 1,
+                            explanation: 'I WAS NOT here yesterday.',
+                            difficulty: 2,
+                            type: 'multiple_choice'
+                        }
+                    ]
+                },
+                '6': {
+                    'Անգլերեն': [
+                        {
+                            id: '6-eng-1',
+                            question: 'Choose: Look! The boys ... football.',
+                            image: 'https://images.unsplash.com/photo-1575361204480-aadea25e6e68?w=400&h=200&fit=crop&crop=center',
+                            options: ['play', 'plays', 'are playing', 'played'],
+                            correct: 2,
+                            explanation: 'Look! The boys ARE PLAYING football.',
+                            difficulty: 2,
+                            type: 'multiple_choice'
+                        },
+                        {
+                            id: '6-eng-2',
+                            question: 'Write Past Simple: go →',
+                            image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=200&fit=crop&crop=center',
+                            options: ['goed', 'went', 'gone', 'goes'],
+                            correct: 1,
+                            explanation: 'go → went',
+                            difficulty: 2,
+                            type: 'multiple_choice'
+                        }
+                    ]
+                },
+                '7': {
+                    'Անգլերեն': [
+                        {
+                            id: '7-eng-1',
+                            question: 'Replace: These pencils are (you) ...',
+                            image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=200&fit=crop&crop=center',
+                            options: ['your', 'yours', 'you\'re', 'you'],
+                            correct: 1,
+                            explanation: 'These pencils are YOURS.',
+                            difficulty: 3,
+                            type: 'multiple_choice'
+                        },
+                        {
+                            id: '7-eng-2',
+                            question: 'Choose: She burst into ...',
+                            image: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?w=400&h=200&fit=crop&crop=center',
+                            options: ['tear', 'tears', 'teared', 'tearing'],
+                            correct: 1,
+                            explanation: 'She burst into TEARS.',
+                            difficulty: 3,
+                            type: 'multiple_choice'
+                        }
+                    ]
+                },
+                '8': {
+                    'Անգլերեն': [
+                        {
+                            id: '8-eng-1',
+                            question: 'Choose the correct verb form: It ... many years ago.',
+                            image: 'https://images.unsplash.com/photo-1592210454359-9043f067919b?w=400&h=200&fit=crop&crop=center',
+                            options: ['happens', 'happened', 'has happened', 'will happen'],
+                            correct: 1,
+                            explanation: 'It HAPPENED many years ago.',
+                            difficulty: 3,
+                            type: 'multiple_choice'
+                        },
+                        {
+                            id: '8-eng-2',
+                            question: 'Put reflexive pronoun: Aram hurt ... when playing hockey.',
+                            image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=200&fit=crop&crop=center',
+                            options: ['him', 'his', 'himself', 'he'],
+                            correct: 2,
+                            explanation: 'Aram hurt HIMSELF when playing hockey.',
+                            difficulty: 3,
+                            type: 'multiple_choice'
+                        }
+                    ],
+                    'Մաթեմատիկա': [
+                        {
+                            id: '8-math-1',
+                            question: 'Լուծեք հավասարումը՝ 3x - 7 = 14',
+                            image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=200&fit=crop&crop=center',
+                            options: ['x = 5', 'x = 6', 'x = 7', 'x = 8'],
+                            correct: 2,
+                            explanation: '3x = 14 + 7 = 21, x = 21 ÷ 3 = 7',
+                            difficulty: 3,
+                            type: 'multiple_choice'
+                        }
+                    ]
+                },
+                '9': {
+                    'Անգլերեն': [
+                        {
+                            id: '9-eng-1',
+                            question: 'Choose the correct verb form: I wonder what he ... about.',
+                            image: 'https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?w=400&h=200&fit=crop&crop=center',
+                            options: ['is thinking', 'thinks', 'thought', 'has thought'],
+                            correct: 0,
+                            explanation: 'I wonder what he IS THINKING about.',
+                            difficulty: 4,
+                            type: 'multiple_choice'
+                        },
+                        {
+                            id: '9-eng-2',
+                            question: 'Use phrasal verb: This room looks very untidy. ... it a bit.',
+                            image: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&h=200&fit=crop&crop=center',
+                            options: ['clean up', 'turn off', 'turn on', 'cheer up'],
+                            correct: 0,
+                            explanation: 'CLEAN UP it a bit.',
+                            difficulty: 4,
+                            type: 'multiple_choice'
+                        }
+                    ],
+                    'Մաթեմատիկա': [
+                        {
+                            id: '9-math-1',
+                            question: 'Լուծեք՝ (2x + 3)(x - 4) = ?',
+                            image: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=200&fit=crop&crop=center',
+                            options: ['2x² - 5x - 12', '2x² + 5x - 12', '2x² - 5x + 12', '2x² + 5x + 12'],
+                            correct: 0,
+                            explanation: '(2x + 3)(x - 4) = 2x² - 8x + 3x - 12 = 2x² - 5x - 12',
+                            difficulty: 4,
+                            type: 'multiple_choice'
+                        }
+                    ]
+                }
+            },
+            
+            aiKnowledgeBase: {
+                'անգլերեն': [
+                    { questionPattern: 'անգլերեն.*հայերեն.*թարգման', answer: 'Ես կարող եմ օգնել անգլերեն բառերի և արտահայտությունների թարգմանությամբ։' },
+                    { questionPattern: 'ժամանակ.*անգլերեն', answer: 'Անգլերենում կան 12 ժամանակաձևեր։' }
+                ],
+                'մաթեմատիկա': [
+                    { questionPattern: 'ինչպես.*լուծել', answer: 'Մաթեմատիկական խնդիր լուծելու համար հետևեք այս քայլերին...' }
+                ],
+                'ընդհանուր': [
+                    { questionPattern: 'բարելավել.*արդյունք', answer: 'Արդյունքները բարելավելու համար...' }
+                ]
+            }
+        };
+
+        const appState = {
+            currentUser: null,
+            currentGrade: null,
+            currentSubject: null,
+            currentQuestionIndex: 0,
+            currentQuestions: [],
+            selectedOption: null,
+            studentPhoto: null,
+            studentsData: JSON.parse(localStorage.getItem('schoolStudents')) || {},
+            teacherData: JSON.parse(localStorage.getItem('teacherData')) || {},
+            aiCharacter: {},
+            whiteboardData: '',
+            searchQuery: ''
+        };
+
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationContainer');
+            const colors = { 'info': '#4361ee', 'success': '#06d6a0', 'warning': '#f8961e', 'error': '#f72585' };
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.style.background = colors[type] || colors.info;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i><span>${message}</span>`;
+            
+            container.appendChild(notification);
+            
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTeacher = localStorage.getItem('currentTeacher');
+            const savedStudent = localStorage.getItem('currentStudent');
+            
+            if (savedTeacher) {
+                const teacher = JSON.parse(savedTeacher);
+                showTeacherDashboard(teacher);
+                showNotification(`Բարի գալուստ, ${teacher.name}`, 'success');
+                return;
+            }
+            
+            if (savedStudent) {
+                const student = JSON.parse(savedStudent);
+                showStudentDashboard(student);
+                showNotification(`Բարի գալուստ, ${student.firstName}`, 'success');
+                return;
+            }
+            
+            showAuthScreen();
+        });
+
+        function quickLogin(email, password) {
+            document.getElementById('teacherEmail').value = email;
+            document.getElementById('teacherPassword').value = password;
+            showNotification('Տվյալները լրացված են։ Մուտքագրվում է...', 'info');
+            setTimeout(() => teacherLogin(), 1000);
+        }
+
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('studentAuth').classList.add('hidden');
+            document.getElementById('teacherAuth').classList.add('hidden');
+            
+            if (tab === 'student') {
+                document.querySelector('.auth-tab:nth-child(1)').classList.add('active');
+                document.getElementById('studentAuth').classList.remove('hidden');
+            } else {
+                document.querySelector('.auth-tab:nth-child(2)').classList.add('active');
+                document.getElementById('teacherAuth').classList.remove('hidden');
+            }
+        }
+
+        function proceedToCamera() {
+            const grade = document.getElementById('studentGrade').value;
+            if (!grade) {
+                showNotification('Խնդրում եմ ընտրեք դասարանը', 'warning');
+                return;
+            }
+            
+            appState.currentGrade = grade;
+            showCameraScreen();
+        }
+
+        function showCameraScreen() {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('cameraScreen').classList.remove('hidden');
+            
+            Webcam.set({ width: 640, height: 480, image_format: 'jpeg', jpeg_quality: 90 });
+            Webcam.attach('#camera');
+        }
+
+        function capturePhoto() {
+            Webcam.snap(function(data_uri) {
+                document.getElementById('capturedPhoto').src = data_uri;
+                appState.studentPhoto = data_uri;
+                document.getElementById('camera').classList.add('hidden');
+                document.getElementById('photoPreview').classList.remove('hidden');
+                showNotification('Լուսանկարը հաջողությամբ արված է', 'success');
+            });
+        }
+
+        function retakePhoto() {
+            document.getElementById('camera').classList.remove('hidden');
+            document.getElementById('photoPreview').classList.add('hidden');
+            showNotification('Կարող եք նորից լուսանկարել', 'info');
+        }
+
+        function saveStudentProfile() {
+            const firstName = document.getElementById('studentFirstName').value.trim();
+            const lastName = document.getElementById('studentLastName').value.trim();
+            const patronymic = document.getElementById('studentPatronymic').value.trim();
+            
+            if (!firstName || !lastName) {
+                showNotification('Խնդրում եմ լրացրեք անունը և ազգանունը', 'warning');
+                return;
+            }
+            
+            const studentId = 'S' + Date.now() + Math.floor(Math.random() * 1000);
+            
+            const student = {
+                id: studentId,
+                firstName: firstName,
+                lastName: lastName,
+                patronymic: patronymic,
+                fullName: `${firstName} ${lastName} ${patronymic}`,
+                grade: appState.currentGrade,
+                photo: appState.studentPhoto,
+                registrationDate: new Date().toLocaleDateString('hy-AM'),
+                subjects: {},
+                aiCharacter: createStudentProfile({firstName}),
+                email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@school.am`,
+                role: 'student',
+                lastLogin: new Date().toISOString()
+            };
+            
+            if (!appState.studentsData[appState.currentGrade]) {
+                appState.studentsData[appState.currentGrade] = [];
+            }
+            
+            appState.studentsData[appState.currentGrade].push(student);
+            localStorage.setItem('schoolStudents', JSON.stringify(appState.studentsData));
+            localStorage.setItem('currentStudent', JSON.stringify(student));
+            appState.currentUser = student;
+            
+            showStudentDashboard(student);
+            showNotification(`Պրոֆիլը հաջողությամբ պահպանված է, ${firstName}`, 'success');
+            sendWelcomeEmail(student);
+        }
+
+        function createStudentProfile(student) {
+            const traits = ['Մոտիվացնող', 'Հետաքրքրասեր', 'Տրամաբանական', 'Ստեղծագործ', 'Վերլուծական', 'Կենսուրախ'];
+            const learningStyles = ['Տեսողական', 'Լսողական', 'Կինեստետիկ', 'Կարդալ/գրել'];
+            const interests = ['Գիտություն', 'Մաթեմատիկա', 'Լեզուներ', 'Արվեստ', 'Սպորտ', 'Տեխնոլոգիաներ'];
+            
+            return {
+                trait: traits[Math.floor(Math.random() * traits.length)],
+                learningStyle: learningStyles[Math.floor(Math.random() * learningStyles.length)],
+                interest: interests[Math.floor(Math.random() * interests.length)],
+                motivationLevel: Math.floor(Math.random() * 100) + 1,
+                lastActive: new Date().toLocaleDateString('hy-AM'),
+                totalQuestionsAnswered: 0,
+                correctAnswers: 0,
+                favoriteSubject: '',
+                weakAreas: []
+            };
+        }
+
+        function sendWelcomeEmail(student) {
+            console.log(`Նամակ ուղարկված է ${student.email}-ին`);
+            console.log(`Սիրելի ${student.firstName}, ձեր պրոֆիլը հաջողությամբ գրանցված է ${student.grade}-րդ դասարանում։`);
+        }
+
+        function showStudentDashboard(student) {
+            document.getElementById('cameraScreen').classList.add('hidden');
+            document.getElementById('studentDashboard').classList.remove('hidden');
+            
+            document.getElementById('profilePhoto').src = student.photo;
+            document.getElementById('studentFullName').textContent = student.fullName;
+            document.getElementById('studentGradeText').textContent = `${student.grade}-րդ դասարան`;
+            document.getElementById('studentId').textContent = `ID: ${student.id}`;
+            document.getElementById('registrationDate').textContent = student.registrationDate;
+            document.getElementById('aiStudentName').textContent = student.firstName;
+            
+            loadSubjectsForGrade(student.grade);
+        }
+
+        function loadSubjectsForGrade(grade) {
+            const subjectsGrid = document.getElementById('subjectsGrid');
+            subjectsGrid.innerHTML = '';
+            
+            const subjects = gameData.subjectsByGrade[grade] || [];
+            
+            subjects.forEach((subjectObj) => {
+                const subject = subjectObj.name;
+                const subjectStyle = gameData.subjectStyles[subject] || { color: '#4361ee', icon: '📚' };
+                
+                const subjectCard = document.createElement('div');
+                subjectCard.className = 'subject-card';
+                subjectCard.style.borderLeftColor = subjectStyle.color;
+                subjectCard.onclick = () => startSubject(subject);
+                
+                const student = appState.currentUser;
+                const subjectResults = student.subjects && student.subjects[subject] ? student.subjects[subject] : null;
+                
+                subjectCard.innerHTML = `
+                    <div class="subject-icon">${subjectStyle.icon}</div>
+                    <div class="subject-name">${subject}</div>
+                    <div style="color: #666; margin-bottom: 20px;">${getSubjectDescription(subject)}</div>
+                    <div class="subject-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${subjectResults ? subjectResults.percentage + '%' : '0%'}</div>
+                            <div class="stat-label">Տոկոս</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${subjectResults ? subjectResults.completed + '/10' : '0/10'}</div>
+                            <div class="stat-label">Ավարտված</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${subjectResults ? getGradeEmoji(subjectResults.percentage) : '📝'}</div>
+                            <div class="stat-label">Գնահատական</div>
+                        </div>
+                    </div>
+                `;
+                
+                subjectsGrid.appendChild(subjectCard);
+            });
+        }
+
+        function getSubjectDescription(subject) {
+            const descriptions = {
+                'Մայրենի լեզու': 'Լեզվի և գրականության ուսումնասիրություն',
+                'Մաթեմատիկա': 'Թվերի և հաշվարկների գիտություն',
+                'Ֆիզիկա': 'Բնության օրինաչափությունների ուսումնասիրություն',
+                'Քիմիա': 'Նյութերի և նրանց փոխակերպումների գիտություն',
+                'Կենսաբանություն': 'Կյանքի և կենդանի օրգանիզմների գիտություն',
+                'Անգլերեն': 'Անգլերեն լեզվի ուսումնասիրություն',
+                'Ռուսերեն': 'Ռուսերեն լեզվի ուսումնասիրություն',
+                'Պատմություն': 'Անցյալի իրադարձությունների ուսումնասիրություն',
+                'Աշխարհագրություն': 'Երկրագնդի և նրա բնության ուսումնասիրություն',
+                'Ինֆորմատիկա': 'Համակարգիչների և ծրագրավորման ուսումնասիրություն',
+                'Բնագիտություն': 'Բնության հիմնական օրինաչափություններ',
+                'Նկարչություն': 'Արվեստի և գեղանկարչության ուսումնասիրություն',
+                'Երաժշտություն': 'Երաժշտական արվեստի ուսումնասիրություն',
+                'Ֆիզիկական դաստիարակություն': 'Սպորտ և ֆիզիկական զարգացում',
+                'Արտասահմանյան լեզու': 'Լրացուցիչ լեզվի ուսումնասիրություն'
+            };
+            
+            return descriptions[subject] || 'Ուսումնական առարկա';
+        }
+
+        function getGradeEmoji(percentage) {
+            if (percentage >= 90) return '🏆';
+            if (percentage >= 75) return '⭐';
+            if (percentage >= 60) return '✅';
+            if (percentage >= 40) return '⚠️';
+            return '❌';
+        }
+
+        function startSubject(subject) {
+            appState.currentSubject = subject;
+            appState.currentQuestionIndex = 0;
+            appState.selectedOption = null;
+            
+            document.getElementById('studentDashboard').classList.add('hidden');
+            document.getElementById('questionScreen').classList.remove('hidden');
+            
+            loadQuestionFromDatabase();
+            showNotification(`Սկսեցիք ${subject} առարկայի թեստը`, 'info');
+        }
+
+        function getMixedQuestions(grade, subject, count = 10) {
+            const questions = [];
+            const gradeQuestions = gameData.questionsDatabase[grade] || {};
+            const subjectQuestions = gradeQuestions[subject] || [];
+            
+            let availableQuestions = [...subjectQuestions];
+            
+            if (availableQuestions.length < count) {
+                for (const g in gameData.questionsDatabase) {
+                    if (g !== grade && gameData.questionsDatabase[g][subject]) {
+                        availableQuestions = availableQuestions.concat(gameData.questionsDatabase[g][subject]);
+                    }
+                }
+            }
+            
+            for (let i = 0; i < count && i < availableQuestions.length; i++) {
+                const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+                questions.push(availableQuestions[randomIndex]);
+                availableQuestions.splice(randomIndex, 1);
+            }
+            
+            return questions;
+        }
+
+        function loadQuestionFromDatabase() {
+            const grade = appState.currentUser.grade;
+            const subject = appState.currentSubject;
+            
+            appState.currentQuestions = getMixedQuestions(grade, subject, 10);
+            
+            if (appState.currentQuestions.length === 0) {
+                appState.currentQuestions.push({
+                    id: 'default-1',
+                    question: `${subject} առարկայի հարցերը դեռ ավելացված չեն։ Այս հարցը փորձնական է:`,
+                    options: ['Տարբերակ 1', 'Տարբերակ 2', 'Տարբերակ 3', 'Տարբերակ 4'],
+                    correct: 0,
+                    explanation: 'Սա փորձնական հարց է։ Իրական հարցերը կավելացվեն ավելի ուշ։',
+                    difficulty: 1
+                });
+            }
+            
+            const questionIndex = appState.currentQuestionIndex % appState.currentQuestions.length;
+            const question = appState.currentQuestions[questionIndex];
+            
+            document.getElementById('questionSubject').textContent = appState.currentSubject;
+            document.getElementById('questionCounter').textContent = `Հարց ${appState.currentQuestionIndex + 1}/${appState.currentQuestions.length}`;
+            
+            const questionContainer = document.getElementById('questionContainer');
+            questionContainer.innerHTML = '';
+            
+            let questionHTML = `<div class="question-text">${question.question}</div>`;
+            
+            if (question.image) {
+                questionHTML += `<div class="question-image"><img src="${question.image}" alt="Question Image"></div>`;
+            }
+            
+            questionContainer.innerHTML = questionHTML;
+            
+            const optionsGrid = document.getElementById('optionsGrid');
+            optionsGrid.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.innerHTML = `<div class="option-number">${index + 1}</div><div class="option-text">${option}</div>`;
+                optionElement.onclick = () => selectOption(index, optionElement);
+                optionsGrid.appendChild(optionElement);
+            });
+            
+            document.getElementById('submitBtn').disabled = true;
+        }
+
+        function selectOption(index, element) {
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            appState.selectedOption = index;
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function submitAnswer() {
+            if (appState.selectedOption === null) return;
+            
+            const questionIndex = appState.currentQuestionIndex % appState.currentQuestions.length;
+            const correctAnswer = appState.currentQuestions[questionIndex].correct;
+            
+            document.querySelectorAll('.option').forEach((opt, index) => {
+                if (index === correctAnswer) opt.classList.add('correct');
+                else if (index === appState.selectedOption && index !== correctAnswer) opt.classList.add('incorrect');
+                opt.onclick = null;
+            });
+            
+            if (!appState.currentUser.subjects) appState.currentUser.subjects = {};
+            if (!appState.currentUser.subjects[appState.currentSubject]) {
+                appState.currentUser.subjects[appState.currentSubject] = { correct: 0, total: 0, percentage: 0, completed: 0 };
+            }
+            
+            const subjectData = appState.currentUser.subjects[appState.currentSubject];
+            subjectData.total++;
+            
+            if (appState.selectedOption === correctAnswer) {
+                subjectData.correct++;
+                showNotification('Ճիշտ պատասխան', 'success');
+            } else {
+                showNotification('Սխալ պատասխան', 'error');
+            }
+            
+            subjectData.percentage = (subjectData.correct / subjectData.total) * 100;
+            
+            setTimeout(() => {
+                appState.currentQuestionIndex++;
+                
+                if (appState.currentQuestionIndex < appState.currentQuestions.length) {
+                    loadQuestionFromDatabase();
+                } else {
+                    subjectData.completed = appState.currentQuestions.length;
+                    
+                    const grade = appState.currentUser.grade;
+                    const students = appState.studentsData[grade];
+                    const studentIndex = students.findIndex(s => s.id === appState.currentUser.id);
+                    if (studentIndex !== -1) {
+                        students[studentIndex] = appState.currentUser;
+                        appState.studentsData[grade] = students;
+                        localStorage.setItem('schoolStudents', JSON.stringify(appState.studentsData));
+                        localStorage.setItem('currentStudent', JSON.stringify(appState.currentUser));
+                    }
+                    
+                    const percentage = subjectData.percentage.toFixed(1);
+                    showNotification(`Թեստը ավարտված է։ Ձեր տոկոսը՝ ${percentage}%`, 'success');
+                    
+                    setTimeout(() => {
+                        alert(`Շնորհավորում եմ! Դուք ավարտեցիք ${appState.currentSubject} առարկայի թեստը։\nՁեր տոկոսը՝ ${percentage}%`);
+                        backToSubjects();
+                    }, 1000);
+                }
+            }, 2000);
+        }
+
+        function backToSubjects() {
+            document.getElementById('questionScreen').classList.add('hidden');
+            document.getElementById('studentDashboard').classList.remove('hidden');
+            loadSubjectsForGrade(appState.currentUser.grade);
+        }
+
+        function askAI(question) {
+            const aiMessage = document.getElementById('aiMessage');
+            const student = appState.currentUser;
+            
+            const responses = {
+                'Ինչպե՞ս լուծել մաթեմատիկական խնդիրը': `Սիրելի ${student.firstName}, մաթեմատիկական խնդիր լուծելու համար՝
+1. Կարդացեք խնդիրը ուշադիր
+2. Պարզեք, թե ինչ է պահանջվում
+3. Օգտագործեք համապատասխան բանաձևեր
+4. Կատարեք հաշվարկներ քայլ առ քայլ
+5. Ստուգեք ձեր պատասխանը
+
+Ձեր AI բնութագիրը՝ ${student.aiCharacter.trait}, ${student.aiCharacter.learningStyle} ուսուցման ոճ`,
+
+                'Բացատրիր ֆիզիկայի այս հասկացությունը': `Ֆիզիկան բնության օրենքների ուսումնասիրությունն է։ Այն բացատրում է՝
+- Ինչպես է շարժվում նյութը
+- Ինչպես է փոխանցվում էներգիան
+- Ինչպես են փոխազդում մասնիկները
+
+Ձեր հետաքրքրությունը՝ ${student.aiCharacter.interest}, կօգնի ձեզ ավելի լավ հասկանալ ֆիզիկան։`,
+
+                'Ինչպե՞ս բարելավել իմ արդյունքները': `Սիրելի ${student.firstName}, ձեր արդյունքները բարելավելու համար՝
+1. Կանոնավոր կրկնություններ կատարեք
+2. Ակտիվ մասնակցեք դասերին
+3. Կատարեք տնային առաջադրանքները
+4. Օգտվեք լրացուցիչ ռեսուրսներից
+5. Հանգստանալու համար ժամանակ հատկացրեք
+
+Ձեր մոտիվացիայի մակարդակը՝ ${student.aiCharacter.motivationLevel}% - շատ լավ է։ Շարունակեք այդպես։`
+            };
+            
+            aiMessage.textContent = responses[question] || `Սիրելի ${student.firstName}, ես դեռ չեմ կարող պատասխանել այս հարցին։ Խնդրում եմ կոնկրետացրեք ձեր հարցը կամ օգտվեք առաջարկվող հարցերից։`;
+            showNotification('AI-ն պատասխանել է ձեր հարցին', 'info');
+        }
+
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const query = searchInput.value.trim();
+            
+            if (!query) {
+                showNotification('Խնդրում եմ մուտքագրեք որոնման հարցում', 'warning');
+                return;
+            }
+            
+            const results = searchInDatabase(query);
+            showSearchResults(results, query);
+        }
+
+        function searchInDatabase(query) {
+            const results = [];
+            const grades = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+            
+            grades.forEach(grade => {
+                if (gameData.questionsDatabase[grade]) {
+                    const subjects = gameData.questionsDatabase[grade];
+                    for (const subject in subjects) {
+                        subjects[subject].forEach(question => {
+                            if (question.question.toLowerCase().includes(query.toLowerCase()) ||
+                                subject.toLowerCase().includes(query.toLowerCase())) {
+                                results.push({
+                                    grade: grade,
+                                    subject: subject,
+                                    question: question.question,
+                                    id: question.id
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+            
+            return results;
+        }
+
+        function showSearchResults(results, query) {
+            const modal = document.getElementById('searchModal');
+            const content = document.getElementById('searchResultsContent');
+            
+            let resultsHTML = '';
+            
+            if (results.length > 0) {
+                resultsHTML = `<p>Գտնվել է ${results.length} հարց "${query}" հարցման համար:</p>
+                    <div style="max-height: 400px; overflow-y: auto; margin-top: 20px;">`;
+                
+                results.forEach((result, index) => {
+                    resultsHTML += `
+                        <div style="padding: 15px; margin: 10px 0; background: #f8f9fa; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                            <strong>${result.subject} (${result.grade}-րդ դասարան)</strong>
+                            <p style="margin: 5px 0;">${result.question}</p>
+                            <small style="color: #666;">ID: ${result.id}</small>
+                        </div>`;
+                });
+                
+                resultsHTML += '</div>';
+            } else {
+                resultsHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-search" style="font-size: 48px; color: #ccc; margin-bottom: 20px;"></i>
+                        <p style="color: #666; font-size: 1.2em;">Որոնման արդյունքներ չեն գտնվել "${query}" հարցման համար</p>
+                    </div>`;
+            }
+            
+            content.innerHTML = resultsHTML;
+            modal.style.display = 'block';
+        }
+
+        function closeSearchModal() {
+            document.getElementById('searchModal').style.display = 'none';
+        }
+
+        function openAIChat() {
+            document.getElementById('aiChatModal').style.display = 'block';
+            showNotification('AI զրուցասենյակը բացված է', 'info');
+        }
+
+        function closeAIChatModal() {
+            document.getElementById('aiChatModal').style.display = 'none';
+        }
+
+        function sendAIMessage() {
+            const input = document.getElementById('aiChatInput');
+            const messagesDiv = document.getElementById('aiChatMessages');
+            
+            if (!input || !messagesDiv || !input.value.trim()) return;
+            
+            const question = input.value;
+            const userMessage = `<div style="padding: 10px; margin: 10px 0; background: #e3f2fd; border-radius: 8px; text-align: right; border-right: 4px solid var(--accent-color);">
+                <strong>Դուք:</strong> ${question}</div>`;
+            messagesDiv.innerHTML += userMessage;
+            
+            const answer = askAIAdvanced(question, appState.currentUser);
+            const aiMessage = `<div style="padding: 10px; margin: 10px 0; background: white; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                <strong>AI Օգնական:</strong> ${answer}</div>`;
+            messagesDiv.innerHTML += aiMessage;
+            
+            input.value = '';
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            showNotification('Ձեր հաղորդագրությունը ուղարկված է', 'info');
+        }
+
+        function askAIAdvanced(question, studentContext) {
+            const lowerQuestion = question.toLowerCase();
+            let answer = '';
+            
+            for (const category in gameData.aiKnowledgeBase) {
+                for (const knowledge of gameData.aiKnowledgeBase[category]) {
+                    if (lowerQuestion.includes(knowledge.questionPattern)) {
+                        answer = knowledge.answer;
+                        break;
+                    }
+                }
+                if (answer) break;
+            }
+            
+            if (!answer) {
+                answer = generateAIResponse(question, studentContext);
+            }
+            
+            return answer;
+        }
+
+        function generateAIResponse(question, studentContext) {
+            const aiChar = studentContext?.aiCharacter || {};
+            const name = studentContext?.firstName || 'աշակերտ';
+            
+            const responses = [
+                `Սիրելի ${name}, ձեր հարցը շատ հետաքրքիր է: Ես կփորձեմ օգնել ձեզ:`,
+                `${name}, ձեր ${aiChar.learningStyle || 'ուսուցման'} ոճի համար առաջարկում եմ հետևյալը:`,
+                `Հիմնվելով ձեր ${aiChar.trait || 'բնութագրի'} վրա, կարող եմ առաջարկել...`
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)] + 
+                   ` Այս թեմայի վերաբերյալ խորհուրդ եմ տալիս դիմել ձեր ուսուցչին կամ օգտվել լրացուցիչ ռեսուրսներից:`;
+        }
+
+        function teacherLogin() {
+            const email = document.getElementById('teacherEmail').value.trim();
+            const password = document.getElementById('teacherPassword').value.trim();
+            
+            if (!email) {
+                showNotification('Խնդրում եմ մուտքագրեք էլեկտրոնային հասցե', 'warning');
+                return;
+            }
+            
+            const teacher = gameData.teachers[email];
+            
+            if (!teacher || (teacher.password && teacher.password !== password)) {
+                showNotification('Սխալ էլեկտրոնային հասցե կամ գաղտնաբառ', 'error');
+                return;
+            }
+            
+            teacher.email = email;
+            localStorage.setItem('currentTeacher', JSON.stringify(teacher));
+            localStorage.setItem('teacherData', JSON.stringify({ ...appState.teacherData, lastLogin: new Date().toISOString() }));
+            
+            showTeacherDashboard(teacher);
+            showNotification(`Բարի գալուստ, ${teacher.name}`, 'success');
+        }
+
+        function showTeacherDashboard(teacher) {
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('teacherDashboard').classList.remove('hidden');
+            document.getElementById('teacherWelcome').textContent = `Բարի գալուստ, ${teacher.name}`;
+            
+            if (teacher.role === 'director') {
+                document.getElementById('teacherWelcome').textContent += ' (Տնօրեն)';
+                showNotification('Մուտք գործեցիք որպես տնօրեն', 'success');
+            }
+        }
+
+        function loadClassData() {
+            const grade = document.getElementById('teacherClassSelect').value;
+            if (!grade) return;
+            
+            const classData = document.getElementById('classStatistics');
+            classData.classList.remove('hidden');
+            
+            const students = appState.studentsData[grade] || [];
+            const totalStudents = students.length;
+            
+            let totalPercentage = 0;
+            let completedTests = 0;
+            let topStudent = null;
+            let topScore = 0;
+            let subjectStats = {};
+            
+            students.forEach(student => {
+                let studentTotal = 0;
+                let studentCount = 0;
+                
+                if (student.subjects) {
+                    Object.entries(student.subjects).forEach(([subject, data]) => {
+                        studentTotal += data.percentage || 0;
+                        studentCount++;
+                        if (data.completed === 10) completedTests++;
+                        
+                        if (!subjectStats[subject]) subjectStats[subject] = { total: 0, count: 0 };
+                        subjectStats[subject].total += data.percentage || 0;
+                        subjectStats[subject].count++;
+                    });
+                }
+                
+                const avg = studentCount > 0 ? studentTotal / studentCount : 0;
+                if (avg > topScore) {
+                    topScore = avg;
+                    topStudent = student.firstName + ' ' + student.lastName.charAt(0) + '.';
+                }
+                
+                totalPercentage += avg;
+            });
+            
+            const averageScore = students.length > 0 ? (totalPercentage / students.length) : 0;
+            
+            document.getElementById('totalStudents').textContent = totalStudents;
+            document.getElementById('averageScore').textContent = averageScore.toFixed(1) + '%';
+            document.getElementById('completedTests').textContent = completedTests;
+            document.getElementById('topStudent').textContent = topStudent || '-';
+            
+            loadStudentsList(students);
+            displaySubjectStats(subjectStats);
+            showNotification(`${grade}-րդ դասարանի տվյալները բեռնված են`, 'info');
+        }
+
+        function loadStudentsList(students) {
+            const studentsList = document.getElementById('studentsList');
+            studentsList.innerHTML = '';
+            
+            if (students.length === 0) {
+                studentsList.innerHTML = '<p style="text-align: center; padding: 20px; color: #666;">Այս դասարանում դեռ աշակերտներ չկան</p>';
+                return;
+            }
+            
+            students.forEach(student => {
+                let avgPercentage = 0;
+                let subjectCount = 0;
+                
+                if (student.subjects) {
+                    Object.values(student.subjects).forEach(subject => {
+                        avgPercentage += subject.percentage || 0;
+                        subjectCount++;
+                    });
+                }
+                
+                avgPercentage = subjectCount > 0 ? (avgPercentage / subjectCount) : 0;
+                
+                const studentRow = document.createElement('div');
+                studentRow.className = 'student-row';
+                studentRow.innerHTML = `
+                    <div class="student-avatar-small">
+                        <img src="${student.photo || 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNTAiIGZpbGw9IiM0MzYxZWUiLz48cGF0aCBkPSJNNTAgNTVDNjEuNTk4IDU1IDcxIDQ1LjU5OCA3MSAzNEM3MSAyMi40MDIgNjEuNTk4IDEzIDUwIDEzUzI5IDIyLjQwMiAyOSAzNGMwIDExLjU9OCA5LjQwMiAyMSAyMSAyMXoiIGZpbGw9IndoaXRlIi8+PGNpcmNsZSBjeD0iNTAiIGN5PSI3MCIgcj0iMjUiIGZpbGw9IndoaXRlIi8+PC9zdmc+'}" alt="${student.firstName}">
+                    </div>
+                    <div style="flex: 1;">
+                        <strong>${student.firstName} ${student.lastName}</strong>
+                        <div style="color: #666; font-size: 0.9em;">ID: ${student.id} | ${student.grade}-րդ դասարան</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: bold; color: ${avgPercentage >= 60 ? '#06D6A0' : '#EF476F'}">${avgPercentage.toFixed(1)}%</div>
+                        <div style="font-size: 0.9em; color: #666;">${Object.keys(student.subjects || {}).length} առարկա</div>
+                    </div>`;
+                
+                studentsList.appendChild(studentRow);
+            });
+        }
+
+        function displaySubjectStats(subjectStats) {
+            const statsContainer = document.getElementById('subjectStats');
+            statsContainer.innerHTML = '';
+            
+            if (Object.keys(subjectStats).length === 0) {
+                statsContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Առարկայական վիճակագրություն դեռ չկա</p>';
+                return;
+            }
+            
+            let html = `<h4 style="color: var(--teacher-color); margin: 30px 0 15px 0;">
+                <i class="fas fa-chart-pie"></i> Առարկայական Վիճակագրություն</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">`;
+            
+            for (const subject in subjectStats) {
+                const avg = subjectStats[subject].count > 0 ? 
+                    (subjectStats[subject].total / subjectStats[subject].count) : 0;
+                
+                html += `<div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid var(--primary-color);">
+                    <div style="font-weight: bold; margin-bottom: 5px;">${subject}</div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Միջին տոկոս:</span>
+                        <span style="font-weight: bold; color: ${avg >= 60 ? '#06D6A0' : '#EF476F'}">${avg.toFixed(1)}%</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.9em; color: #666;">
+                        <span>Աշակերտներ:</span>
+                        <span>${subjectStats[subject].count}</span>
+                    </div>
+                </div>`;
+            }
+            
+            html += '</div>';
+            statsContainer.innerHTML = html;
+        }
+
+        function sendReportsToEmail() {
+            const grade = document.getElementById('teacherClassSelect').value;
+            if (!grade) {
+                showNotification('Խնդրում եմ նախ ընտրեք դասարանը', 'warning');
+                return;
+            }
+            
+            const students = appState.studentsData[grade] || [];
+            if (students.length === 0) {
+                showNotification('Այս դասարանում դեռ աշակերտներ չկան', 'warning');
+                return;
+            }
+            
+            console.log('='.repeat(50));
+            console.log('ՀԱՇՎԵՏՎՈՒԹՅՈՒՆ՝ ԴԱՍԱՐԱՆ ' + grade);
+            console.log('='.repeat(50));
+            
+            students.forEach((student, index) => {
+                console.log(`\n${index + 1}. ${student.fullName}`);
+                console.log(`   Էլ. փոստ: ${student.email}`);
+                console.log(`   Գրանցման ամսաթիվ: ${student.registrationDate}`);
+                
+                if (student.subjects && Object.keys(student.subjects).length > 0) {
+                    console.log('   Առարկայական արդյունքներ:');
+                    Object.entries(student.subjects).forEach(([subject, data]) => {
+                        console.log(`   - ${subject}: ${data.percentage.toFixed(1)}% (${data.correct}/${data.total})`);
+                    });
+                }
+            });
+            
+            console.log('\n' + '='.repeat(50));
+            console.log('Հաշվետվությունները ուղարկված են ուսուցչի էլեկտրոնային հասցեին');
+            console.log('='.repeat(50));
+            
+            showNotification('Հաշվետվությունները ուղարկված են էլեկտրոնային փոստով', 'success');
+        }
+
+        function teacherLogout() {
+            localStorage.removeItem('currentTeacher');
+            showAuthScreen();
+            showNotification('Դուրս եք գործել հաջողությամբ', 'info');
+        }
+
+        function logout() {
+            localStorage.removeItem('currentStudent');
+            showAuthScreen();
+            showNotification('Դուրս եք գործել հաջողությամբ', 'info');
+        }
+
+        function showAuthScreen() {
+            document.getElementById('cameraScreen').classList.add('hidden');
+            document.getElementById('studentDashboard').classList.add('hidden');
+            document.getElementById('questionScreen').classList.add('hidden');
+            document.getElementById('teacherDashboard').classList.add('hidden');
+            document.getElementById('authScreen').classList.remove('hidden');
+            
+            if (Webcam) Webcam.reset();
+        }
+
+        window.onclick = function(event) {
+            const searchModal = document.getElementById('searchModal');
+            const aiModal = document.getElementById('aiChatModal');
+            
+            if (event.target == searchModal) searchModal.style.display = 'none';
+            if (event.target == aiModal) aiModal.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
